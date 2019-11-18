@@ -1,0 +1,22 @@
+{
+  "name": "frontend-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emmaoudmaijer/frontend-data.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emmaoudmaijer/frontend-data/issues"
+  },
+  "homepage": "https://github.com/emmaoudmaijer/frontend-data#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
