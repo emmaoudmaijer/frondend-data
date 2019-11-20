@@ -85,6 +85,8 @@ function bouwViz(results) {
 		.enter()
 		.append('g')
 
+		console.log(results)
+
 	categoryBar
 		.append('rect')
 		.attr('class', 'bar')
@@ -94,7 +96,7 @@ function bouwViz(results) {
 		.attr('width', xScale.bandwidth())
 		//hover loslaten , geen opacity
 		
-		.on('mouseenter', function (actual, i) {
+		.on('mouseenter', function (actual, i, category) {
 			d3.selectAll('.value')
 				.attr('opacity', 0) //weghalen van de bar
 
@@ -106,6 +108,17 @@ function bouwViz(results) {
 				.attr('width', xScale.bandwidth() + 10)
 
 			const y = yScale(actual.value)
+		//nieuwe code
+		const tooltip = d3.select("#tooltip")
+			tooltip
+				.style("opacity", 1)
+			
+			tooltip
+				.select("#range")
+				//.html((a.category) + "<br>" + "£" + (a.value));
+				.text([
+					(actual.category) + (actual.value)
+					   ].join(" "))//waardes meegeven aan de tooltip
 
 		// LIJN BOVEN DE BAR CHARTS VOOR EEN DUIDELIJK OVERZICHT
 			line = chart.append('line')
@@ -116,7 +129,6 @@ function bouwViz(results) {
 				.attr('y2', y)
 
 		})
-
 		//hover loslaten , geen opacity
 		.on('mouseleave', function () {
 		
@@ -131,9 +143,13 @@ function bouwViz(results) {
 				.attr('width', xScale.bandwidth())
 
 			chart.selectAll('#limit').remove()
+			
+			const tooltip = d3.select("#tooltip")
+			tooltip 
+			.style("opacity", 0)
 		})
-
-	categoryBar
+		
+		categoryBar
 		.append('text')
 		.attr('x', (a) => xScale(a.category) + xScale.bandwidth() / 2)
 		.attr('y', (a) => yScale(a.value) + 40)
@@ -162,4 +178,5 @@ function bouwViz(results) {
 		.attr('y', 40)
 		.attr('text-anchor', 'middle')
 		.text('Uit welke ruilmiddelen bestaat de collectie van het NMWC?')
+		
 }
