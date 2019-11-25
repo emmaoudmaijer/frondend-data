@@ -1,23 +1,65 @@
 const url = "https://api.data.netwerkdigitaalerfgoed.nl/datasets/ivo/NMVW/services/NMVW-09/sparql"
-const query = `
+const queryStart = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX edm: <http://www.europeana.eu/schemas/edm/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
 SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) (SAMPLE(?afb) AS ?afbSample)
 WHERE {
-  # geef subtypes van ruilmiddelen
-  <https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+`;
+
+//geef subtypes van ruilmiddelen
+let termMaster = `
+  <https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
+`;
+
+const queryEnd = `
   ?cat skos:prefLabel ?catLabel .
+
   # geef de subcategorieen van ruilmiddelen
   ?cat skos:narrower* ?type .
+
   # geef objecten bij de onderliggende types
   ?cho edm:object ?type . 
-  ?cho edm:isShownBy ?afb .
+  
+    ?cho edm:isShownBy ?afb .
+  
 } GROUP BY ?cat ?catLabel
-`
+`;
+
+let query = queryStart + termMaster + queryEnd;
+
+
+
+// SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) 
+// WHERE {
+//   # geef subtypes van ruilmiddelen
+//   <https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
+//   ?cat skos:prefLabel ?catLabel .
+
+//   # geef de subcategorieen van ruilmiddelen
+//   ?cat skos:narrower* ?type .
+
+//   # geef objecten bij de onderliggende types
+//   ?cho edm:object ?type . 
+  
+// } GROUP BY ?cat ?catLabel
+
+
+// SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) (SAMPLE(?afb) AS ?afbSample)
+// WHERE {
+//   # geef subtypes van ruilmiddelen
+//   <https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+//   ?cat skos:prefLabel ?catLabel .
+//   # geef de subcategorieen van ruilmiddelen
+//   ?cat skos:narrower* ?type .
+//   # geef objecten bij de onderliggende types
+//   ?cho edm:object ?type . 
+//   ?cho edm:isShownBy ?afb .
+// } GROUP BY ?cat ?catLabel
 
 function Ruilmiddelperland() {
 	fetch(url + "?query=" + encodeURIComponent(query) + "&format=json") //omzetten naar json en geschikt maken voor de het ophalen uit browser
@@ -39,7 +81,7 @@ function Ruilmiddelperland() {
 Ruilmiddelperland()
 
 function bouwViz(results) {
-	const svg = d3.select('svg');
+	let svg = d3.select('svg');
 	//hoe breed en hoe hoog wordt de visualisatie?
 	const margin = 80;
 	//const margintop = 35;
@@ -48,6 +90,7 @@ function bouwViz(results) {
 	const height = 600 - 2 * margin;
 
 	const chart = svg.append('g')
+		//.attr('id', 'chartimage')
 		.attr('transform', `translate(${margin}, ${margin})`);
 
 	//x-as schaal
@@ -62,7 +105,7 @@ function bouwViz(results) {
 	//y-as schaal
 	const yScale = d3.scaleLinear()
 		.range([height, 0])
-		.domain([0, 240]);
+		.domain([0, 900]);
 
 	const makeYLines = () => d3.axisLeft()
 		.scale(yScale)
@@ -181,6 +224,32 @@ function bouwViz(results) {
 			const tooltip = d3.select("#tooltip")
 			tooltip
 				.style("opacity", 0)
+		})
+
+		categoryBar
+		//hover loslaten , geen opacity
+		.on('click', function (actual, i, category) {
+
+			termMaster = `
+			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+		  `;
+		  		  
+		  query = queryStart + termMaster + queryEnd;
+
+		  console.log(query);
+		  //categoryBar.style("opacity", 0)
+		  //var path = svg.selectAll('path');
+		  //path.exit().remove();
+		  d3.select('svg').remove();
+		  var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
+		  inner = svg.append("g");
+		  //svg.remove();
+		  //var svg = d3.select("#container")
+		  //svg.enter().append("svg")
+ 		  //d3.append("svg")
+
+		  Ruilmiddelperland()
+		  //console.log(actual.category)
 		})
 
 	categoryBar
