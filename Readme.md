@@ -1,6 +1,7 @@
 # Frontend-data
+[Link naar live demo](https://emmaoudmaijer.github.io/frontend-data/)
 
-Tijdens functional programming heb ik een datavisualisatie gemaakt voor het Nationaal Museum van Wereldculturen die collectiebreed en nuttig is voor het museum. Deze visualisatie gaat over de ruilmiddelen 
+Tijdens frontend-data heb ik een datavisualisatie gemaakt voor het Nationaal Museum van Wereldculturen die collectiebreed en nuttig is voor het museum. Deze visualisatie gaat over de ruilmiddelen 
 
 ![foto](public/images/datavisualisatiekopie.png)
 ![foto](public/images/datavisualisatiehoverkopie.png)
@@ -17,7 +18,8 @@ Om meer te weten over mijn proces zie mijn [wiki](https://github.com/emmaoudmaij
 
 De collectie van het NMWC bestaat uit meer dan 700000 objecten, dit is natuurlijk heel veel, maar ik wilde een kleiner deel van de collectie gaan pakken om daat iets interessants mee te laten zien. Daarom besloot ik om me te gaan focussen op ruilmiddelen. De data die ik heb gebruikt komt van het [NMWC](https://collectie.wereldculturen.nl/#/query/80b924c9-65af-47cd-ad25-d7be31beb0ef). De query die ik heb gebruikt om de data over de ruilmiddelen op te halen vind je hier onder. Ik heb de subcategorie 'geld' gepakt van de ruilmiddelen en daaronder goederengeld. Nu kun je dus in de visualisatie zien waar dat allemaal uit bestaat. Dit heb ik gedaan omdat je als bezoeker dan een beter beeld krijgt van wat voor soort ruilmiddelen er nou eigenlijk bestaan en in welke categorie deze horen.
 
-```
+```js
+`
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX dct: <http://purl.org/dc/terms/>
@@ -25,10 +27,10 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX edm: <http://www.europeana.eu/schemas/edm/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) 
+SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) (SAMPLE(?afb) AS ?afbSample)
 WHERE {
-  # geef subtypes van ruilmiddelen
-  <https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
+<https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
+
   ?cat skos:prefLabel ?catLabel .
 
   # geef de subcategorieen van ruilmiddelen
@@ -37,7 +39,10 @@ WHERE {
   # geef objecten bij de onderliggende types
   ?cho edm:object ?type . 
   
+    ?cho edm:isShownBy ?afb .
+  
 } GROUP BY ?cat ?catLabel
+`
 ```
 
 ## Data manipulatie
@@ -48,16 +53,17 @@ Hier vind je de link naar het inladen en het manipuleren van de data, dit kun je
 ## Install
 
 ```
-git clone https://github.com/emmaoudmaijer/functional-programming.git
+git clone https://github.com/emmaoudmaijer/frontend-data.git
 ```
 ```
-cd functional-programming
+cd frontend-data
 ```
 ```
 npm install
 ```
 ## Special thanks
-Hulp gehad met de data invoegen uit sparql door Kris Kuiper
-## Licence
 
+### Bronnen
+
+## Licence
 ISC - Emma Oudmaijer
