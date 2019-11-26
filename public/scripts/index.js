@@ -32,35 +32,6 @@ const queryEnd = `
 
 let query = queryStart + termMaster + queryEnd;
 
-
-
-// SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) 
-// WHERE {
-//   # geef subtypes van ruilmiddelen
-//   <https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
-//   ?cat skos:prefLabel ?catLabel .
-
-//   # geef de subcategorieen van ruilmiddelen
-//   ?cat skos:narrower* ?type .
-
-//   # geef objecten bij de onderliggende types
-//   ?cho edm:object ?type . 
-  
-// } GROUP BY ?cat ?catLabel
-
-
-// SELECT ?cat ?catLabel (COUNT(?cho) AS ?choCount) (SAMPLE(?afb) AS ?afbSample)
-// WHERE {
-//   # geef subtypes van ruilmiddelen
-//   <https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
-//   ?cat skos:prefLabel ?catLabel .
-//   # geef de subcategorieen van ruilmiddelen
-//   ?cat skos:narrower* ?type .
-//   # geef objecten bij de onderliggende types
-//   ?cho edm:object ?type . 
-//   ?cho edm:isShownBy ?afb .
-// } GROUP BY ?cat ?catLabel
-
 function Ruilmiddelperland() {
 	fetch(url + "?query=" + encodeURIComponent(query) + "&format=json") //omzetten naar json en geschikt maken voor de het ophalen uit browser
 		.then(data => data.json())
@@ -88,7 +59,11 @@ function bouwViz(results) {
 	//const marginleft = 50;
 	const width = 1000 - 2 * margin;
 	const height = 600 - 2 * margin;
-
+	
+	// let maxValue = d3.select('#maximum')
+    // .node()
+	// .value;
+	
 	const chart = svg.append('g')
 		//.attr('id', 'chartimage')
 		.attr('transform', `translate(${margin}, ${margin})`);
@@ -99,13 +74,12 @@ function bouwViz(results) {
 		.domain(results.map((s) => s.category))
 		.padding(0.4)
 
-	//console.log(results);
-	//console.log(results.map((s) => s.category));
-
 	//y-as schaal
-	const yScale = d3.scaleLinear()
+	let yScale = d3.scaleLinear()
 		.range([height, 0])
-		.domain([0, 900]);
+		// .domain([0, 7000]);
+		.domain([0, 6675]);
+		//.domain([d3.min(), d3.max()])
 
 	const makeYLines = () => d3.axisLeft()
 		.scale(yScale)
@@ -154,47 +128,19 @@ function bouwViz(results) {
 				.attr('x', (a) => xScale(a.category) - 5)
 				.attr('width', xScale.bandwidth() + 10)
 
-			const y = yScale(actual.value)
-			//nieuwe code
-			const x = xScale(category.x0) +
-				(xScale(category.x1) - xScale(category.x0)) / 2 +
-				width.marginleft
-			const yas = yScale(yScale(category)) +
-				height.margintop
 			const tooltip = d3.select("#tooltip")
 			tooltip
 				.style("opacity", 1)
 				.style("left", d3.event.pageX - actual.value)
 				.style("top", d3.event.pageY - actual.value)
-				.style("transform", `translate(${x}px,${yas}px)`)
-			// .style('transform', `translate(${marginleft}, ${margintop})`);
 
 
 			tooltip
 				.select("#range")
-				//.html( "<img src=(actual.foto)/>")
-				.html([ //<img src="(actual.foto)" /> +  
-					//("img src= ${actual.foto}") +
-					 (actual.category + "<img src=" + actual.foto + " width= 100px; height= 100px />") +
-					 (actual.category) + (actual.value) 
+				.html([ 
+					 (actual.category + "<br>" + "<img src=" + actual.foto + " width= 100px; height= 100px />") 
+					 + (actual.value) 
 				].join(" ")) //waardes meegeven aan de tooltip
-				//.style("foto: transform", `translate(${x}px,${yas}px)`))
-				//.style('transform', `translate(${marginleft}, ${margintop})`);
-			tooltip
-				// .attr('id', 'range')
-				// .attr('x1', 0)
-				// .attr('y1', y)
-				// .attr('x2', width)
-				// .attr('y2', y)
-				.style("transform", `translate(` +
-					`calc( -50% + ${xScale}px),` +
-					`calc(-100% + ${yScale}px)` +
-					`)`)
-				// .attr("height", function(d) {       
-				// 	//return y(d.y0) - y(d.y1); //heights calculated based on stacked values (inaccurate)
-				// 	return y(0) - y(d .value); //calculate height directly from value in csv file
-				// })
-
 
 			// LIJN BOVEN DE BAR CHARTS VOOR EEN DUIDELIJK OVERZICHT
 
@@ -247,7 +193,20 @@ function bouwViz(results) {
 		  //var svg = d3.select("#container")
 		  //svg.enter().append("svg")
  		  //d3.append("svg")
+		//    let yScale = d3.scaleLinear()
+		// 	yscale.domain([0, 700]);
 
+    // var exampleData = newResults(maxValue);
+
+    // maxValue = d3.max(exampleData);
+
+    // xscale.domain(d3.range(exampleData.length));
+	// function redraw(max) { 
+	// 	if      (max.value >= 6000) { yScale.range([0,  7000]) }
+	// 	else if (max.value <= 500) { yScale.range([0, 500]) };
+	// }
+		//    chart.append('g')
+		// 	.call(d3.axisLeft(redraw));
 		  Ruilmiddelperland()
 		  //console.log(actual.category)
 		})
@@ -284,14 +243,14 @@ function bouwViz(results) {
 
 
 	
-	function stream_waves(n, m) {
-		return d3.range(n).map(function (i) {
-			return d3.range(m).map(function (j) {
-				var x = 20 * j / m - i / 3;
-				return 2 * x * Math.exp(-.5 * x);
-			}).map(stream_index);
-		});
-	}
+	// function stream_waves(n, m) {
+	// 	return d3.range(n).map(function (i) {
+	// 		return d3.range(m).map(function (j) {
+	// 			var x = 20 * j / m - i / 3;
+	// 			return 2 * x * Math.exp(-.5 * x);
+	// 		}).map(stream_index);
+	// 	});
+	// }
 
 	// function stream_index(d, i) {
 	// 	return {
