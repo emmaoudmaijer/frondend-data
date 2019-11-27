@@ -56,14 +56,14 @@ function bouwViz(results) {
 	//hoe breed en hoe hoog wordt de visualisatie?
 	const margin = 80;
 	const width = 1000 - 2 * margin;
-	const height = 600 - 2 * margin;
+	const height = 580 - 2 * margin;
 
 	const chart = svg.append('g')
 		.attr('transform', `translate(${margin}, ${margin})`);
 	//x-as schaal
 
-	results.sort(function(appel, peer) {
-		return d3.descending(appel.value, peer.value)
+	results.sort(function(a, b) {
+		return d3.descending(a.value, b.value)
 	})
 
 	const xScale = d3.scaleBand()
@@ -102,12 +102,6 @@ function bouwViz(results) {
 		.data(results)
 		.enter()
 		.append('g')
-	
-		//results.sort(d3.ascending)	
-//   sort(function(a, b) {
-	// 	return a.value - b.value;
-	// });
-	// console.log(results.sort)
 
 	console.log(results)
 
@@ -122,29 +116,29 @@ function bouwViz(results) {
 		.attr('width', xScale.bandwidth())
 		//hover loslaten , geen opacity
 	
+
 	categoryBar
 		.on('mouseenter', function (actual, i, category) {
-			d3.selectAll('.value')
+			//d3.select('.bar')
+			d3.select('value')
 				.attr('opacity', 0) //weghalen van de bar
 
 			d3.select(this)
+			//d3.select('.bar')
 				.transition()
 				.duration(300)
 				.attr('opacity', 0.6) //terugzetten van de bar transparant
 				.attr('x', (a) => xScale(a.category) - 5)
 				.attr('width', xScale.bandwidth() + 10)
+				  
 			const y = yScale(actual.value)
 			const tooltip = d3.select("#tooltip")
 			tooltip
 				.style("opacity", 1)
-				 //.style("left", d3.event.pageX - 50)
-				 //.style("top", d3.event.pageY - 50)
-
-			tooltip
 				.select("#range")
 				.html([ 
-					 (actual.category + "<br>" + "<img src=" + actual.foto + " width= 100px; height= 100px />") 
-					 + (actual.value) 
+					 "Categorie: " + (actual.category + "<br>" + "<img src=" + actual.foto + " width= 100px; height= 100px />") 
+					 + "<p>Items in de collectie:</p>" + (actual.value) + " Items"
 				].join(" ")) //waardes meegeven aan de tooltip
 
 			// LIJN BOVEN DE BAR CHARTS VOOR EEN DUIDELIJK OVERZICHT
@@ -155,15 +149,16 @@ function bouwViz(results) {
 				.attr('y1', y)
 				.attr('x2', width)
 				.attr('y2', y)				
-
+				
+			
 		})
 		//hover loslaten , geen opacity
 		.on('mouseleave', function () {
-
-			d3.selectAll('.value')
+			//d3.select('.bar')
+			 d3.select('.value')
 				.attr('opacity', 1)
 
-			d3.select(this)
+			 d3.select(this)
 				.transition()
 				.duration(300)
 				.attr('opacity', 1)
@@ -173,12 +168,12 @@ function bouwViz(results) {
 			chart.selectAll('#limit').remove()
 			const tooltip = d3.select("#tooltip")
 			tooltip
-				.style("opacity", 0)
+				.style("opacity", 0) //hover loslaten , geen opacity
 		})
 
 		categoryBar
-		//hover loslaten , geen opacity
-		.on('click', function () {
+			d3.select('.bar')
+			.on('click', function () {
 			
 			termMaster = `
 			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
