@@ -55,31 +55,27 @@ function bouwViz(results) {
 	let svg = d3.select('svg');
 	//hoe breed en hoe hoog wordt de visualisatie?
 	const margin = 80;
-	//const margintop = 35;
-	//const marginleft = 50;
 	const width = 1000 - 2 * margin;
 	const height = 600 - 2 * margin;
-	
-	// let maxValue = d3.select('#maximum')
-    // .node()
-	// .value;
-	
-	const chart = svg.append('g')
-		//.attr('id', 'chartimage')
-		.attr('transform', `translate(${margin}, ${margin})`);
 
+	const chart = svg.append('g')
+		.attr('transform', `translate(${margin}, ${margin})`);
 	//x-as schaal
+
+	results.sort(function(appel, peer) {
+		return d3.descending(appel.value, peer.value)
+	})
+
 	const xScale = d3.scaleBand()
 		.range([0, width])
 		.domain(results.map((s) => s.category))
 		.padding(0.4)
 
 	//y-as schaal
-	let yScale = d3.scaleLinear()
+	let yScale = d3.scaleSqrt() //scale toegevoegd omdat de data te ver uit elkaar lag, om zo een beter overzicht te geven
+		.exponent(0.5)
 		.range([height, 0])
-		// .domain([0, 7000]);
-		.domain([0, 6675]);
-		//.domain([d3.min(), d3.max()])
+		.domain([0, d3.max(results.map((s) => s.value))]).nice()
 
 	const makeYLines = () => d3.axisLeft()
 		.scale(yScale)
@@ -92,6 +88,7 @@ function bouwViz(results) {
 	// Nieuwe groep, verticale lijn y-as tekenen
 	chart.append('g')
 		.call(d3.axisLeft(yScale));
+		
 
 	//grid maken op achtergrond bar chart
 	chart.append('g')
@@ -105,6 +102,12 @@ function bouwViz(results) {
 		.data(results)
 		.enter()
 		.append('g')
+	
+		//results.sort(d3.ascending)	
+//   sort(function(a, b) {
+	// 	return a.value - b.value;
+	// });
+	// console.log(results.sort)
 
 	console.log(results)
 
@@ -113,10 +116,13 @@ function bouwViz(results) {
 		.attr('class', 'bar')
 		.attr('x', (g) => xScale(g.category))
 		.attr('y', (g) => yScale(g.value))
+		.transition()
+		.duration(800)
 		.attr('height', (g) => height - yScale(g.value))
 		.attr('width', xScale.bandwidth())
 		//hover loslaten , geen opacity
-
+	
+	categoryBar
 		.on('mouseenter', function (actual, i, category) {
 			d3.selectAll('.value')
 				.attr('opacity', 0) //weghalen van de bar
@@ -127,13 +133,12 @@ function bouwViz(results) {
 				.attr('opacity', 0.6) //terugzetten van de bar transparant
 				.attr('x', (a) => xScale(a.category) - 5)
 				.attr('width', xScale.bandwidth() + 10)
-
+			const y = yScale(actual.value)
 			const tooltip = d3.select("#tooltip")
 			tooltip
 				.style("opacity", 1)
-				.style("left", d3.event.pageX - actual.value)
-				.style("top", d3.event.pageY - actual.value)
-
+				 //.style("left", d3.event.pageX - 50)
+				 //.style("top", d3.event.pageY - 50)
 
 			tooltip
 				.select("#range")
@@ -166,7 +171,6 @@ function bouwViz(results) {
 				.attr('width', xScale.bandwidth())
 
 			chart.selectAll('#limit').remove()
-
 			const tooltip = d3.select("#tooltip")
 			tooltip
 				.style("opacity", 0)
@@ -174,8 +178,8 @@ function bouwViz(results) {
 
 		categoryBar
 		//hover loslaten , geen opacity
-		.on('click', function (actual, i, category) {
-
+		.on('click', function () {
+			
 			termMaster = `
 			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
 		  `;
@@ -183,32 +187,11 @@ function bouwViz(results) {
 		  query = queryStart + termMaster + queryEnd;
 
 		  console.log(query);
-		  //categoryBar.style("opacity", 0)
-		  //var path = svg.selectAll('path');
-		  //path.exit().remove();
 		  d3.select('svg').remove();
 		  var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
 		  inner = svg.append("g");
-		  //svg.remove();
-		  //var svg = d3.select("#container")
-		  //svg.enter().append("svg")
- 		  //d3.append("svg")
-		//    let yScale = d3.scaleLinear()
-		// 	yscale.domain([0, 700]);
 
-    // var exampleData = newResults(maxValue);
-
-    // maxValue = d3.max(exampleData);
-
-    // xscale.domain(d3.range(exampleData.length));
-	// function redraw(max) { 
-	// 	if      (max.value >= 6000) { yScale.range([0,  7000]) }
-	// 	else if (max.value <= 500) { yScale.range([0, 500]) };
-	// }
-		//    chart.append('g')
-		// 	.call(d3.axisLeft(redraw));
 		  Ruilmiddelperland()
-		  //console.log(actual.category)
 		})
 
 	categoryBar
@@ -240,76 +223,4 @@ function bouwViz(results) {
 		.attr('y', 40)
 		.attr('text-anchor', 'middle')
 		.text('Uit welke ruilmiddelen bestaat de collectie van het NMWC?')
-
-
-	
-	// function stream_waves(n, m) {
-	// 	return d3.range(n).map(function (i) {
-	// 		return d3.range(m).map(function (j) {
-	// 			var x = 20 * j / m - i / 3;
-	// 			return 2 * x * Math.exp(-.5 * x);
-	// 		}).map(stream_index);
-	// 	});
-	// }
-
-	// function stream_index(d, i) {
-	// 	return {
-	// 		x: i,
-	// 		y: Math.max(0, d)
-	// 	};
-	// }
-
-	// var myChart;
-	// var chart;
-
-	// nv.addGraph(function () {
-	// 	chart = nv.models.multiBarChart();
-
-	// 	chart.xAxis
-	// 		.tickFormat(d3.format(',f'));
-
-	// 	chart.yAxis
-	// 		.tickFormat(d3.format(',.1f'));
-
-	// 	chart.multibar.stacked(true); // default to stacked
-	// 	chart.showControls(false); // don't show controls
-
-	// 	// on legend click, re-apply onclick events
-	// 	chart.dispatch.on('renderEnd', function () {
-	// 		d3.selectAll(".nv-bar").on('click',
-	// 			function () {
-	// 				updateMyChart()
-	// 			});
-	// 	});
-
-	// 	myChart = d3.select('#chart svg');
-
-	// 	myChart.datum(data())
-	// 		.transition().duration(500).call(chart);
-
-	// 	nv.utils.windowResize(chart.update);
-
-	// 	return chart;
-	// }, function () {
-	// 	d3.selectAll(".nv-bar").on('click',
-	// 		function () {
-
-	// 			updateMyChart()
-
-	// 		});
-	// });
-
-	// function updateMyChart() {
-	// 	myChart.datum(data()).transition().duration(1000).call(chart);
-	// 	myChart.selectAll(".nv-bar").on('click',
-	// 		function () {
-
-	// 			updateMyChart()
-
-	// 		});
-	// 	nv.utils.windowResize(myChart.update);
-	// }
-
-
-
 }
