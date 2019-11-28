@@ -71,7 +71,7 @@ function bouwViz(results) {
 		.domain(results.map((s) => s.category))
 		.padding(0.4)
 
-	//y-as schaal
+	//y-as schaal Bron: https://www.d3indepth.com/scales/
 	let yScale = d3.scaleSqrt() //scaleSqrt toegevoegd omdat de data te ver uit elkaar lag, om zo een beter overzicht te geven
 		.exponent(0.5)
 		.range([height, 0])
@@ -130,6 +130,7 @@ function bouwViz(results) {
 				.attr('width', xScale.bandwidth() + 10)
 				  
 			const y = yScale(actual.value)
+			// Bron bij tooltip: https://wattenberger.com/blog/d3-interactive-charts
 			const tooltip = d3.select("#tooltip")
 			tooltip
 				.style("opacity", 1)
