@@ -7,12 +7,19 @@ Tijdens frontend-data heb ik een datavisualisatie gemaakt voor het Nationaal Mus
 ![foto](public/images/uitwerking2.png)
 
 ### Het concept:
-De datavisualisatie laat zien hoeveel ruilmiddelen er zijn binnen de collectie van het NMWC binnen de catagorie Geld. Onder geld zitten weer verschillende soorten ruilmiddelen en met deze visualisatie kun je zien wat voor soort geld er is en hoeveel objecten er zijn binnen de verschillende categorieën.
+De datavisualisatie laat zien hoeveel ruilmiddelen er zijn binnen de collectie van het NMWC binnen de catagorie Munten. Onder munten zitten weer verschillende categorieën en met deze visualisatie kun je zien wat voor soort geld er is en hoeveel objecten er zijn binnen die verschillende categorieën. De interactie die is toegevoegd is een tooltip en een update aan de bar chart. Met de tooltip kan je als bezoeker van het museum een idee krijgen van wat er allemaal in ruilmiddelen zit. In de tooltip krijg je bij elke categorie nu een afbeelding te zien van een voorwerp uit de categorie. Zo krijg je een goed beeld van wat bijvoorbeeld 'stenengeld' is. 
 
+De update die is toegevoegd zorgt ervoor dat je nog een beter beeld krijgt van de ruilmiddelen, doordat je in de categorie 'munten' weer verder kan klikken en je een nieuwe bar krijgt met de ruilmiddelen die alleen binnen de munten vallen. Zo krijg je een beter overzicht.
+
+### Features
 - Je kunt met de muis over een categorie gaan en dan zie je een duidelijke lijn van hoeveel objecten er onder die categorie vallen.
-- Uiteindelijk is de bedoeling dat je op elke categorie door kan klikken om zo bij de subcategorieën te komen en weer een nieuwe bar chart krijgt met meer inhoud.
+- Je kunt op de categorie munten door klikken om zo bij de subcategorieën van de munten te komen en weer een nieuwe bar chart krijgt met nieuwe inhoud.
+- Je krijgt een toolbar te zien zodat je een beter beeld krijg van wat er allemaal in de categorie van elke bar zit.
 
 Om meer te weten over mijn proces zie mijn [wiki](https://github.com/emmaoudmaijer/frontend-data/wiki/Concept-en-proces)
+
+### Doelgroep
+Deze visualisatie is voor de bezoekers van het nationaal museum van wereldculturen.
 
 ## Data & Query
 
@@ -49,7 +56,7 @@ Ik haal hier de subcategorie op bij de ruilmiddelen die vallen onder geld. Zo he
 ![console](public/images/console1kopie.png)
 
 ## Scale
-De schaal in mijn visualisatie is een belangrijk punt. Dit was een punt waar ik zeker over na moest denken aangezien ik heel veel verschillende waardes in mijn data heb. 1 waarde van 6000 en 1 waarde van 1 bijvoorbeeld. Dit ziet er gek uit als je de visualisatie zo laat zien. Dan valt de waarde met 1, helemaal weg. Om de visualisatie overzichtelijker te maken heb ik scaleLinear vervangen door scaleSqrt, waardoor je dus nu in de visualisatie veel duidelijker ziet hoeveel ruilmiddelen er nou per categorie in de collectie zitten.
+De schaal in mijn visualisatie is een belangrijk punt. Dit was een punt waar ik zeker over na moest denken aangezien ik heel veel verschillende waardes in mijn data heb en. 1 waarde van 6000 en 1 waarde van 1 bijvoorbeeld. Dit ziet er gek uit als je de visualisatie zo laat zien. Dan valt de waarde met 1, helemaal weg. Om de visualisatie overzichtelijker te maken heb ik scaleLinear vervangen door scaleSqrt, waardoor je dus nu in de visualisatie veel duidelijker ziet hoeveel ruilmiddelen er nou per categorie in de collectie zitten. Dit kan soms een vertekend beeld geven van de data, vandaar omschrijf ik het even.
 
 ## Install project
 Clone deze repository naar je computer:
@@ -75,6 +82,6 @@ Deze bronnen hebben mij geholpen bij het leren van d3 en het maken van de visual
 - https://jsfiddle.net/n57ee84g/1/
 - https://www.youtube.com/watch?v=LO-8xiB3Z_Q
 - https://www.d3indepth.com/enterexit/
-
+- https://www.d3indepth.com/scales/
 ## Licence
 ISC - Emma Oudmaijer

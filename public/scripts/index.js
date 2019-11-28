@@ -89,13 +89,12 @@ function bouwViz(results) {
 	chart.append('g')
 		.call(d3.axisLeft(yScale));
 		
-
 	//grid maken op achtergrond bar chart
 	chart.append('g')
 		.attr('class', 'grid')
 		.call(makeYLines()
-			.tickSize(-width, 0, 0)
-			.tickFormat('')
+		.tickSize(-width, 0, 0)
+		.tickFormat('')
 		)
 	// data aanroepen, versturen en groeperen
 	const categoryBar = chart.selectAll()
@@ -116,7 +115,6 @@ function bouwViz(results) {
 		.attr('width', xScale.bandwidth())
 		//hover loslaten , geen opacity
 	
-
 	categoryBar
 		.on('mouseenter', function (actual, i, category) {
 			//d3.select('.bar')
@@ -142,15 +140,12 @@ function bouwViz(results) {
 				].join(" ")) //waardes meegeven aan de tooltip
 
 			// LIJN BOVEN DE BAR CHARTS VOOR EEN DUIDELIJK OVERZICHT
-
 				line = chart.append('line')
 				.attr('id', 'limit')
 				.attr('x1', 0)
 				.attr('y1', y)
 				.attr('x2', width)
-				.attr('y2', y)				
-				
-			
+				.attr('y2', y)								
 		})
 		//hover loslaten , geen opacity
 		.on('mouseleave', function () {
@@ -171,22 +166,22 @@ function bouwViz(results) {
 				.style("opacity", 0) //hover loslaten , geen opacity
 		})
 
-		categoryBar
-			d3.select('.bar')
-			.on('click', function () {
+	categoryBar
+		d3.select('.bar')
+		.on('click', function () {
 			
-			termMaster = `
-			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
-		  `;
+		termMaster = `
+		<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+		`;
 		  		  
-		  query = queryStart + termMaster + queryEnd;
+		query = queryStart + termMaster + queryEnd;
 
-		  console.log(query);
-		  d3.select('svg').remove();
-		  var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
-		  inner = svg.append("g");
+		console.log(query);
+		d3.select('svg').remove();
+		var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
+		inner = svg.append("g");
 
-		  Ruilmiddelperland()
+		Ruilmiddelperland()
 		})
 
 	categoryBar
