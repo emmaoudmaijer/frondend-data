@@ -72,7 +72,7 @@ function bouwViz(results) {
 		.padding(0.4)
 
 	//y-as schaal
-	let yScale = d3.scaleSqrt() //scale toegevoegd omdat de data te ver uit elkaar lag, om zo een beter overzicht te geven
+	let yScale = d3.scaleSqrt() //scaleSqrt toegevoegd omdat de data te ver uit elkaar lag, om zo een beter overzicht te geven
 		.exponent(0.5)
 		.range([height, 0])
 		.domain([0, d3.max(results.map((s) => s.value))]).nice()

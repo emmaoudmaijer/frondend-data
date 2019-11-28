@@ -3,7 +3,7 @@
 
 Tijdens frontend-data heb ik een datavisualisatie gemaakt voor het Nationaal Museum van Wereldculturen die collectiebreed en nuttig is voor het museum. Deze visualisatie gaat over de ruilmiddelen 
 
-![foto](public/images/uitwerking.png)
+![foto](public/images/uitwerking1kopie.png)
 ![foto](public/images/uitwerking2.png)
 
 ### Het concept:
@@ -45,25 +45,36 @@ WHERE {
 `
 ```
 
-## Data manipulatie
-Hier vind je de link naar het inladen en het manipuleren van de data, dit kun je ook zien in de wiki
-[Data manipulatie.js bestand](https://github.com/emmaoudmaijer/functional-programming/blob/master/datamanipulation.js)
-[Wiki data manipulatie uitleg](https://github.com/emmaoudmaijer/functional-programming/wiki/data-manipulatie)
+Ik haal hier de subcategorie op bij de ruilmiddelen die vallen onder geld. Zo heb ik 7 categorieën overgehouden met daarbinnen de ruilmiddelen. Deze query ga ik omzetten naar json in een functie zodat ik de waardes en categorieën kan gebruiken. Ik heb de query zo geschreven dat er geen lege waardes in de data voor komen en de console geeft dan ook precies terug wat ik zou willen, namelijk een foto, elke category van ruilmiddelen uit de eerste rang en de waarde van hoeveel ruilmiddelen er binnen die categorie in de collectie aanwezig zijn.
+![console](public/images/console1kopie.png)
 
-## Install
+## Scale
+De schaal in mijn visualisatie is een belangrijk punt. Dit was een punt waar ik zeker over na moest denken aangezien ik heel veel verschillende waardes in mijn data heb. 1 waarde van 6000 en 1 waarde van 1 bijvoorbeeld. Dit ziet er gek uit als je de visualisatie zo laat zien. Dan valt de waarde met 1, helemaal weg. Om de visualisatie overzichtelijker te maken heb ik scaleLinear vervangen door scaleSqrt, waardoor je dus nu in de visualisatie veel duidelijker ziet hoeveel ruilmiddelen er nou per categorie in de collectie zitten.
 
+## Install project
+Clone deze repository naar je computer:
 ```
 git clone https://github.com/emmaoudmaijer/frontend-data.git
 ```
+Ga naar de map in je terminal
 ```
 cd frontend-data
 ```
+Installeer packages
 ```
 npm install
 ```
 ## Special thanks
+Ik heb hulp gehad van Robert Spier bij de scale van mijn visualisatie
 
 ### Bronnen
+Deze bronnen hebben mij geholpen bij het leren van d3 en het maken van de visualisatie
+- http://bl.ocks.org/NPashaP/96447623ef4d342ee09b
+- http://bl.ocks.org/jonahwilliams/2f16643b999ada7b1909
+- https://wattenberger.com/blog/d3-interactive-charts
+- https://jsfiddle.net/n57ee84g/1/
+- https://www.youtube.com/watch?v=LO-8xiB3Z_Q
+- https://www.d3indepth.com/enterexit/
 
 ## Licence
 ISC - Emma Oudmaijer
