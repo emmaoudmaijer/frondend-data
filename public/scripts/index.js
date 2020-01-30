@@ -46,11 +46,6 @@ function runSPARQL() {
 						foto: result.afbSample.value
 					}
 				})
-			//console.log(newResults)	
-			//newResults2 = newResults
-			//console.log(newResults2)			
-			//return newResults
-			//buildSVG()
 			drawChart(newResults)
 			
 		})
@@ -137,14 +132,22 @@ function drawChart(results) {
 		.attr('class', 'bar')
 		.attr('y', (g) => yScale(g.value))
 		.attr('x', (g) => xScale(g.category))
-		//.attr('height', (g) => height - yScale(g.value))
+		.attr('height', (g) => height - yScale(g.value))
 		//.attr('height', (g) => height - xScale(g.category))
 		// .attr("y",  (g) => { return height; })
-		.attr('y', function(d){ return yScale(d.value); })
-      	.attr('height', function(d){ return height - yScale(d.value); })
+		//.attr('y', function(d){ return yScale(d.value); })
+		  //.attr('height', function(d){ return height - yScale(d.value); })
+		//.attr('height', function(d){ return height - yScale(d.value); })
+		//.attr("transform", function (d) {
+            //     return "translate(" + 0+" )";
+			// })
 			.transition()
+			//.attr("transform", "translate(" (-1) + ",0)")
 			.duration(750)
 			.delay((g, i) => { return i * 150; })
+			// .attr("transform", function (d) {
+            //     return "translate(" + width +" )";
+            // })
 		.attr('width', xScale.bandwidth())
 		// hover loslaten , geen opacity
 	
@@ -206,63 +209,6 @@ function drawChart(results) {
 				.style("opacity", 0) //hover loslaten , geen opacity
 		})
 
-	// categoryBar
-	// 	d3.select('.bar')
-	// 	.on('click', function () {
-			
-	// 	termMaster = `
-	// 	<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
-	// 	`;
-		  		  
-	// 	query = queryStart + termMaster + queryEnd;
-
-	// 	console.log(query);
-	// 	svg.selectAll(".bar").exit().remove()
-	// 	.data(query)
-	// 	.enter()
-
-	// 	categoryBar.enter().append("rect")
-
-	// 	//var svg = d3.select("svg").append(".bar")
-	// 	//inner = svg.append("g");
-		
-	// 	// var circle = svgDoc.select("g").selectAll(".bar")
-    //     //                 .data(eval("dataArray"+dataIndex));
-                   
-    //     //             circle.exit().remove();//remove unneeded circles
-    //     //             circle.enter().append("circle")
-    //     //                 .attr("r",0);//create any new circles needed
- 
-	// 	//Ruilmiddelperland()
-		
-	// 	})
-		//hover loslaten , geen opacity
-		/*
-		.on('click', function (actual, i, category) {
-
-			termMaster = `
-			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
-		  `;
-
-		  query = queryStart + termMaster + queryEnd;
-
-		  console.log(query);
-		  //categoryBar.style("opacity", 0)
-		  //var path = svg.selectAll('path');
-		  //path.exit().remove();
-		  //d3.select('svg').remove();
-		  //var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
-		  inner = svg.append("g");
-		  //svg.remove();
-		  //var svg = d3.select("#container")
-		  //svg.enter().append("svg")
- 		  //d3.append("svg")
-
-		  Ruilmiddelperland()
-		  //console.log(actual.category)
-		})
-		*/
-
 	categoryBar
 		.append('text')
 		.attr('x', (a) => xScale(a.category) + xScale.bandwidth() / 2)
@@ -297,59 +243,23 @@ function drawChart(results) {
 		.text('Uit welke ruilmiddelen bestaat de collectie van het NMWC?')
 
 	function update(){
-		// svg.selectAll(".bar") 
-		// 	.data(results) 
-		// 	.exit() 
-		// 	.remove();
-
 		termMaster = `
 			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
 			`;				
 			query = queryStart + termMaster + queryEnd;
 			newData = query 
-			console.log(query);
 			console.log(newData)
 			
-			//svg.selectAll("categoryBar").exit().remove()
-			//categoryBar.remove()
-			//categoryBar.enter().append("rect")
-			// 	.data(query)
-			// 	.enter()
-
-
-			// const categoryBar = chart.selectAll()
-			// 	.data(runSPARQL(newData))
-			// 	.enter()
-			// 	.append('rect')
-			
-
-			d3.selectAll("rect").remove();
-			d3.selectAll("text").remove();
-			d3.selectAll(".tick").remove();
 			d3.select("button").remove();
-			//d3.selectAll("").remove();
-			//d3.selectAll("text")
-			//		.remove();
-
-			d3.selectAll("svg")
+		
+			d3.selectAll("g")
 				.enter()
-				.append("rect")
 				.data(runSPARQL(newData))
 
-			// g.transition()
-			// .duration(500)
-			// .attr("cx",function(d,i){
-			// 	var spacing = lineLength/(eval("dataArray"+dataIndex).length);
-			// 	return xBuffer+(i*spacing)
-			// })
-			// .attr("cy",yBuffer)
-			// .attr("r",function(d,i){return d});
-			//document.getElementById("continentChange")
-			//	.innerHTML = selectedContinent
-			//runSPARQL()
-			svg.selectAll("rect").data(results)
-            .exit().remove();
-
+			d3.selectAll("g").data(results)
+				.exit().remove();
+			d3.selectAll("text")
+			.remove();
 	}
 
 	let button = d3.select("#container").append('button')
