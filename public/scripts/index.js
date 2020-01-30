@@ -266,7 +266,7 @@ function drawChart(results) {
 	let button2 = d3.select("#container").append('button')
 	button
 		.text('Alle ruilmiddelen')
-		.on('click', function(d){
+		.on('click', function(){
 			termMaster = `
 			<https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
 			 `;
