@@ -31,7 +31,7 @@ const queryEnd = `
 `;
 
 let query = queryStart + termMaster + queryEnd;
-let newResults = [];
+//let newResults = [];
 
 
 function runSPARQL() {
@@ -243,35 +243,49 @@ function drawChart(results) {
 		.text('Uit welke ruilmiddelen bestaat de collectie van het NMWC?')
 
 	function update(){
-		termMaster = `
+			termMaster = `
 			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
-			`;				
-			query = queryStart + termMaster + queryEnd;
-			newData = query 
-			console.log(newData)
-			
-			d3.select("button").remove();
+			`;
+		query = queryStart + termMaster + queryEnd;
+		newData = query 
+		console.log(newData)
 		
+		d3.selectAll("button").remove();
+	
+		d3.selectAll("g")
+			.enter()
+			.data(runSPARQL(newData))
+
+		d3.selectAll("g").data(results)
+			.exit().remove();
+		d3.selectAll("text")
+		.remove();
+
+	}
+	let button = d3.select("#container").append('button')
+	let button2 = d3.select("#container").append('button')
+	button
+		.text('Alle ruilmiddelen')
+		.on('click', function(d){
+			termMaster = `
+			<https://hdl.handle.net/20.500.11840/termmaster12591> skos:narrower/skos:narrower ?cat .
+			 `;
+			query = queryStart + termMaster + queryEnd;
+			d3.selectAll("button").remove();
+	
 			d3.selectAll("g")
 				.enter()
-				.data(runSPARQL(newData))
+				.data(runSPARQL(query))
 
-			d3.selectAll("g").data(results)
-				.exit().remove();
+			d3.selectAll("g").data(newData)
+				.remove();
 			d3.selectAll("text")
 			.remove();
-	}
+		})
 
-	let button = d3.select("#container").append('button')
-	button
-		.text('Algemeen contact')
-		.style('background-color', 'yellow')
-		.style('color', 'black')
-		.on('click', update)
-
-		
+	button2
+	.text('Munten')
+	.on('click', update)
 }
 
 runSPARQL()
-//onsole.log(newResults)
-//drawChart(newResults)
