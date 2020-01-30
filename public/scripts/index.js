@@ -31,8 +31,10 @@ const queryEnd = `
 `;
 
 let query = queryStart + termMaster + queryEnd;
+let newResults = [];
 
-function Ruilmiddelperland() {
+
+function runSPARQL() {
 	fetch(url + "?query=" + encodeURIComponent(query) + "&format=json") //omzetten naar json en geschikt maken voor de het ophalen uit browser
 		.then(data => data.json())
 		.then(json => {
@@ -44,14 +46,36 @@ function Ruilmiddelperland() {
 						foto: result.afbSample.value
 					}
 				})
-				//console.log(foto)
-			bouwViz(newResults)
+			//console.log(newResults)	
+			//newResults2 = newResults
+			//console.log(newResults2)			
+			//return newResults
+			//buildSVG()
+			drawChart(newResults)
+			
 		})
+	
 }
 
-Ruilmiddelperland()
+ //test =  drawChart(newResults)
+// function buildSVG() {
+// 	let svg = d3.select('svg');
+// 	//hoe breed en hoe hoog wordt de visualisatie?
+// 	const margin = 80;
+// 	//const width = 1000 - 2 * margin;
+// 	//const height = 580 - 2 * margin;
 
-function bouwViz(results) {
+// 	//const chart = svg.append('g')
+// 	//	.attr('transform', `translate(${margin}, ${margin})`);
+// 	//x-as schaal
+
+// 	results.sort(function(a, b) {
+// 		return d3.descending(a.value, b.value)
+// 	})
+
+// }
+
+function drawChart(results) {
 	let svg = d3.select('svg');
 	//hoe breed en hoe hoog wordt de visualisatie?
 	const margin = 80;
@@ -61,6 +85,10 @@ function bouwViz(results) {
 	const chart = svg.append('g')
 		.attr('transform', `translate(${margin}, ${margin})`);
 	//x-as schaal
+
+	let animation = d3.transition()
+		.duration(700)
+		.ease(d3.easePoly);
 
 	results.sort(function(a, b) {
 		return d3.descending(a.value, b.value)
@@ -107,14 +135,25 @@ function bouwViz(results) {
 	categoryBar
 		.append('rect')
 		.attr('class', 'bar')
-		.attr('x', (g) => xScale(g.category))
 		.attr('y', (g) => yScale(g.value))
-		.transition()
-		.duration(800)
-		.attr('height', (g) => height - yScale(g.value))
+		.attr('x', (g) => xScale(g.category))
+		//.attr('height', (g) => height - yScale(g.value))
+		//.attr('height', (g) => height - xScale(g.category))
+		// .attr("y",  (g) => { return height; })
+		.attr('y', function(d){ return yScale(d.value); })
+      	.attr('height', function(d){ return height - yScale(d.value); })
+			.transition()
+			.duration(750)
+			.delay((g, i) => { return i * 150; })
 		.attr('width', xScale.bandwidth())
-		//hover loslaten , geen opacity
+		// hover loslaten , geen opacity
 	
+	// categoryBar.selectAll("rect")
+	// 	.attr("y",  g => { return height; })
+	// 		.transition()
+	// 		.duration(750)
+	// 		.delay((g, i) => { return i * 150; })
+
 	categoryBar
 		.on('mouseenter', function (actual, i, category) {
 			//d3.select('.bar')
@@ -167,27 +206,69 @@ function bouwViz(results) {
 				.style("opacity", 0) //hover loslaten , geen opacity
 		})
 
-	categoryBar
-		d3.select('.bar')
-		.on('click', function () {
+	// categoryBar
+	// 	d3.select('.bar')
+	// 	.on('click', function () {
 			
-		termMaster = `
-		<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
-		`;
+	// 	termMaster = `
+	// 	<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+	// 	`;
 		  		  
-		query = queryStart + termMaster + queryEnd;
+	// 	query = queryStart + termMaster + queryEnd;
 
-		console.log(query);
-		d3.select('svg').remove();
-		var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
-		inner = svg.append("g");
+	// 	console.log(query);
+	// 	svg.selectAll(".bar").exit().remove()
+	// 	.data(query)
+	// 	.enter()
 
-		Ruilmiddelperland()
+	// 	categoryBar.enter().append("rect")
+
+	// 	//var svg = d3.select("svg").append(".bar")
+	// 	//inner = svg.append("g");
+		
+	// 	// var circle = svgDoc.select("g").selectAll(".bar")
+    //     //                 .data(eval("dataArray"+dataIndex));
+                   
+    //     //             circle.exit().remove();//remove unneeded circles
+    //     //             circle.enter().append("circle")
+    //     //                 .attr("r",0);//create any new circles needed
+ 
+	// 	//Ruilmiddelperland()
+		
+	// 	})
+		//hover loslaten , geen opacity
+		/*
+		.on('click', function (actual, i, category) {
+
+			termMaster = `
+			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+		  `;
+
+		  query = queryStart + termMaster + queryEnd;
+
+		  console.log(query);
+		  //categoryBar.style("opacity", 0)
+		  //var path = svg.selectAll('path');
+		  //path.exit().remove();
+		  //d3.select('svg').remove();
+		  //var svg = d3.select("#container").append("svg").attr("width","960").attr("height", "600");
+		  inner = svg.append("g");
+		  //svg.remove();
+		  //var svg = d3.select("#container")
+		  //svg.enter().append("svg")
+ 		  //d3.append("svg")
+
+		  Ruilmiddelperland()
+		  //console.log(actual.category)
 		})
+		*/
 
 	categoryBar
 		.append('text')
 		.attr('x', (a) => xScale(a.category) + xScale.bandwidth() / 2)
+			.transition()
+			.duration(750)
+			.delay((g, i) => { return i * 150; })
 		.attr('y', (a) => yScale(a.value) + 40)
 		.attr('text-anchor', 'middle')
 		.text((a) => `${a.value}`)
@@ -214,4 +295,73 @@ function bouwViz(results) {
 		.attr('y', 40)
 		.attr('text-anchor', 'middle')
 		.text('Uit welke ruilmiddelen bestaat de collectie van het NMWC?')
+
+	function update(){
+		// svg.selectAll(".bar") 
+		// 	.data(results) 
+		// 	.exit() 
+		// 	.remove();
+
+		termMaster = `
+			<https://hdl.handle.net/20.500.11840/termmaster12596> skos:narrower ?cat .
+			`;				
+			query = queryStart + termMaster + queryEnd;
+			newData = query 
+			console.log(query);
+			console.log(newData)
+			
+			//svg.selectAll("categoryBar").exit().remove()
+			//categoryBar.remove()
+			//categoryBar.enter().append("rect")
+			// 	.data(query)
+			// 	.enter()
+
+
+			// const categoryBar = chart.selectAll()
+			// 	.data(runSPARQL(newData))
+			// 	.enter()
+			// 	.append('rect')
+			
+
+			d3.selectAll("rect").remove();
+			d3.selectAll("text").remove();
+			d3.selectAll(".tick").remove();
+			d3.select("button").remove();
+			//d3.selectAll("").remove();
+			//d3.selectAll("text")
+			//		.remove();
+
+			d3.selectAll("svg")
+				.enter()
+				.append("rect")
+				.data(runSPARQL(newData))
+
+			// g.transition()
+			// .duration(500)
+			// .attr("cx",function(d,i){
+			// 	var spacing = lineLength/(eval("dataArray"+dataIndex).length);
+			// 	return xBuffer+(i*spacing)
+			// })
+			// .attr("cy",yBuffer)
+			// .attr("r",function(d,i){return d});
+			//document.getElementById("continentChange")
+			//	.innerHTML = selectedContinent
+			//runSPARQL()
+			svg.selectAll("rect").data(results)
+            .exit().remove();
+
+	}
+
+	let button = d3.select("#container").append('button')
+	button
+		.text('Algemeen contact')
+		.style('background-color', 'yellow')
+		.style('color', 'black')
+		.on('click', update)
+
+		
 }
+
+runSPARQL()
+//onsole.log(newResults)
+//drawChart(newResults)
