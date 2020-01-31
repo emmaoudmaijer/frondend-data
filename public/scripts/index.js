@@ -52,24 +52,6 @@ function runSPARQL() {
 	
 }
 
- //test =  drawChart(newResults)
-// function buildSVG() {
-// 	let svg = d3.select('svg');
-// 	//hoe breed en hoe hoog wordt de visualisatie?
-// 	const margin = 80;
-// 	//const width = 1000 - 2 * margin;
-// 	//const height = 580 - 2 * margin;
-
-// 	//const chart = svg.append('g')
-// 	//	.attr('transform', `translate(${margin}, ${margin})`);
-// 	//x-as schaal
-
-// 	results.sort(function(a, b) {
-// 		return d3.descending(a.value, b.value)
-// 	})
-
-// }
-
 function drawChart(results) {
 	let svg = d3.select('svg');
 	//hoe breed en hoe hoog wordt de visualisatie?
@@ -133,29 +115,11 @@ function drawChart(results) {
 		.attr('y', (g) => yScale(g.value))
 		.attr('x', (g) => xScale(g.category))
 		.attr('height', (g) => height - yScale(g.value))
-		//.attr('height', (g) => height - xScale(g.category))
-		// .attr("y",  (g) => { return height; })
-		//.attr('y', function(d){ return yScale(d.value); })
-		  //.attr('height', function(d){ return height - yScale(d.value); })
-		//.attr('height', function(d){ return height - yScale(d.value); })
-		//.attr("transform", function (d) {
-            //     return "translate(" + 0+" )";
-			// })
 			.transition()
-			//.attr("transform", "translate(" (-1) + ",0)")
 			.duration(750)
 			.delay((g, i) => { return i * 150; })
-			// .attr("transform", function (d) {
-            //     return "translate(" + width +" )";
-            // })
 		.attr('width', xScale.bandwidth())
 		// hover loslaten , geen opacity
-	
-	// categoryBar.selectAll("rect")
-	// 	.attr("y",  g => { return height; })
-	// 		.transition()
-	// 		.duration(750)
-	// 		.delay((g, i) => { return i * 150; })
 
 	categoryBar
 		.on('mouseenter', function (actual, i, category) {
@@ -164,7 +128,6 @@ function drawChart(results) {
 				.attr('opacity', 0) //weghalen van de bar
 
 			d3.select(this)
-			//d3.select('.bar')
 				.transition()
 				.duration(300)
 				.attr('opacity', 0.6) //terugzetten van de bar transparant
